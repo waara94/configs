@@ -1,0 +1,27 @@
+{
+    "workbench.colorTheme": "Default Light+",
+    "cmake.showOptionsMovedNotification": false,
+    "cmake.configureOnOpen": false,
+    "editor.cursorStyle": "block",
+    "workbench.editorAssociations": {
+        "*.pdf": "latex-workshop-pdf-hook"
+    },
+    "editor.minimap.enabled": false,
+    "editor.hideCursorInOverviewRuler": true,
+    "editor.scrollbar.horizontal": "hidden",
+    "editor.scrollbar.vertical": "hidden",
+    "editor.scrollbar.horizontalScrollbarSize": 0,
+    "editor.scrollbar.verticalScrollbarSize": 0,
+    "editor.fontFamily": "Source Code Pro",
+    "python.defaultInterpreterPath": "/home/waara/venv",
+    "editor.renderWhitespace": "none",
+    "window.menuBarVisibility": "toggle",
+    "workbench.statusBar.visible": false,
+    "git.openRepositoryInParentFolders": "always",
+    "terminal.integrated.gpuAcceleration": "on",
+    "terminal.integrated.enableImages": true,
+    "editor.lineNumbers": "on",
+    "hediet.vscode-drawio.resizeImages": null,
+    "workbench.tree.indent": 20,
+    "workbench.activityBar.location": "hidden"
+}

@@ -1,3 +1,5 @@
+# code --list-extensions
+
 aaron-bond.better-comments
 albert.tabout
 charliermarsh.ruff

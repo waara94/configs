@@ -28,4 +28,14 @@ fi
      [ -n "$selected_files" ] && code $selected_files || unset selected_files
  }
 
+cfind() {
+    local start_dir="${1:-.}"  # Use provided directory or current directory
+    local selected_files
+
+    selected_files=$(find "$start_dir" -type f | fzf -m --preview="batcat --color=always --style=plain {}")
+
+    [ -n "$selected_files" ] && code $selected_files || unset selected_files
+}
+
+
 ###################################################################

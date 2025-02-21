@@ -1,0 +1,31 @@
+###################################################################
+PROMPT_DIRTRIM=1
+
+#if [ "$color_prompt" = yes ]; then
+#    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+#else
+#    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+#fi
+#unset color_prompt force_color_prompt
+
+# REPLACED BY
+parse_git_branch() {
+    git branch 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
+}
+
+if [ "$color_prompt" = yes ]; then
+ PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[01;31m\]$(parse_git_branch)\[\033[00m\]\$ '
+else
+ PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w$(parse_git_branch)\$ '
+fi
+
+
+
+# MY CUSTOM ALIASES
+ cfind() {
+     local start_dir="${1:-.}"  # Use provided directory or current directory
+     local selected_files=$(find "$start_dir" -type f | fzf -m --preview="less {}")
+     [ -n "$selected_files" ] && code $selected_files || unset selected_files
+ }
+
+###################################################################

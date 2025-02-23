@@ -12,31 +12,27 @@ PROMPT_DIRTRIM=1
 parse_git_branch() {
     git branch 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
 }
-
-if [ "$color_prompt" = yes ]; then
- PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[01;31m\]$(parse_git_branch)\[\033[00m\]\$ '
-else
- PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w$(parse_git_branch)\$ '
-fi
+PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[01;31m\]$(parse_git_branch)\[\033[00m\]\$ '
 
 
 
 # MY CUSTOM ALIASES
- cfind() {
-     local start_dir="${1:-.}"  # Use provided directory or current directory
-     local selected_files=$(find "$start_dir" -type f | fzf -m --preview="less {}")
-     [ -n "$selected_files" ] && code $selected_files || unset selected_files
- }
+#  cfind() {
+#      local start_dir="${1:-.}"  # Use provided directory or current directory
+#      local selected_files=$(find "$start_dir" -type f | fzf -m --preview="less {}")
+#      [ -n "$selected_files" ] && code $selected_files || unset selected_files
+#  }
 
-cfind() {
-    local start_dir="${1:-.}"  # Use provided directory or current directory
-    local selected_files
+# cfind() {
+#     local start_dir="${1:-.}"  # Use provided directory or current directory
+#     local selected_files
 
-    selected_files=$(find "$start_dir" -type f | fzf -m --preview="batcat --color=always --style=plain {}")
+#     selected_files=$(find "$start_dir" -type f | fzf -m --preview="batcat --color=always --style=plain {}")
 
-    [ -n "$selected_files" ] && code $selected_files || unset selected_files
-}
+#     [ -n "$selected_files" ] && code $selected_files || unset selected_files
+# }
 
+# This one shows git branch and file status
 cfind() {
     local start_dir="${1:-.}"
     local file_pattern="${2:-*}"
@@ -88,4 +84,117 @@ cfind() {
 }
 
 alias cf='cfind'
+
+
+
+# Shortcuts for common commands
+alias ll='ls -larth --color=auto'  # Detailed dir listing with human-readable sizes
+# alias ..='cd ..'                 # Go up one directory
+# alias .. ..='cd ../..'             # Go up two directories
+alias grep='grep --color=auto'   # Colored grep output
+alias bashreload='source ~/.bashrc'  # Reload .bashrc without restarting terminal
+
+# Git shortcuts
+alias gs='git status'
+alias ga='git add'
+alias gc='git commit -m'
+alias gp='git push'
+alias gl='git log --oneline --graph --decorate'
+
+
+
+
+# Save current directory as a bookmark
+bookmark() {
+    local bookmark_name="${1:-default}"
+    # Only replace specific invalid characters (e.g., -, space) with underscores
+    bookmark_name=$(echo "$bookmark_name" | tr ' -' '_')
+    if [[ -z $bookmark_name ]]; then
+        echo "Error: Bookmark name cannot be empty" >&2
+        return 1
+    fi
+    # Check if the name is a valid Bash identifier
+    if ! [[ $bookmark_name =~ ^[a-zA-Z_][a-zA-Z0-9_]*$ ]]; then
+        echo "Error: '$bookmark_name' is not a valid bookmark name (use letters, numbers, or underscores, starting with a letter or underscore)" >&2
+        return 1
+    fi
+    local var_name="DIR_$bookmark_name"
+    printf 'export %s="%s"\n' "$var_name" "$(pwd)" >> ~/.bash_bookmarks
+    source ~/.bash_bookmarks
+    echo "Bookmark '$bookmark_name' set to $(pwd)"
+}
+
+# List all bookmarks
+list_bookmarks() {
+    if [[ -f ~/.bash_bookmarks ]]; then
+        grep 'export DIR_' ~/.bash_bookmarks | sed 's/export DIR_\([^=]*\)=["'"'"']\(.*\)["'"'"']/\1: \2/'
+    else
+        echo "No bookmarks found"
+    fi
+}
+
+# Go to a bookmark
+go() {
+    local bookmark_name="${1:-default}"
+    bookmark_name=$(echo "$bookmark_name" | tr ' -' '_')
+    local var_name="DIR_$bookmark_name"
+    if [[ -n ${!var_name} ]]; then
+        cd "${!var_name}" || {
+            echo "Error: Directory '${!var_name}' not accessible" >&2
+            return 1
+        }
+        echo "Moved to bookmark '$bookmark_name': $(pwd)"
+    else
+        echo "Error: Bookmark '$bookmark_name' not found" >&2
+        return 1
+    fi
+}
+
+# Load bookmarks on startup
+[[ -f ~/.bash_bookmarks ]] && source ~/.bash_bookmarks
+
+
+# Extract any archive with one command
+extract() {
+    if [[ -f $1 ]]; then
+        case $1 in
+            *.tar.bz2) tar xjf "$1" ;;
+            *.tar.gz)  tar xzf "$1" ;;
+            *.bz2)     bunzip2 "$1" ;;
+            *.rar)     unrar x "$1" ;;
+            *.gz)      gunzip "$1"  ;;
+            *.tar)     tar xf "$1"  ;;
+            *.tbz2)    tar xjf "$1" ;;
+            *.tgz)     tar xzf "$1" ;;
+            *.zip)     unzip "$1"   ;;
+            *.Z)       uncompress "$1" ;;
+            *.7z)      7z x "$1"    ;;
+            *)         echo "'$1' cannot be extracted" ;;
+        esac
+    else
+        echo "'$1' is not a valid file"
+    fi
+}
+
+# A simple countdown timer
+timer() {
+    local seconds="${1:-60}"
+    local end=$((SECONDS + seconds))
+    while (( SECONDS < end )); do
+        printf "\rTime left: %02d:%02d" $(( (end - SECONDS) / 60 )) $(( (end - SECONDS) % 60 ))
+        sleep 1
+    done
+    echo -e "\nTime's up!"
+}
+
+# Search command history with fzf
+fh() {
+    local cmd
+    cmd=$(history | fzf --tac --no-sort | awk '{$1=""; sub(/^ /, ""); print $0}')
+    if [[ -n $cmd ]]; then
+        echo "Running: $cmd"
+        eval "$cmd"
+    fi
+}
+
 ###################################################################

@@ -1,4 +1,9 @@
 ###################################################################
+# History settings (Also, see HISTSIZE and HISTFILESIZE)
+PROMPT_COMMAND="history -a; history -n; $PROMPT_COMMAND"
+HISTTIMEFORMAT="%F %T "  # Outputs: YYYY-MM-DD HH:MM:SS
+HISTIGNORE="&:ls:ll:la:history:exit:pwd:clear"
+
 PROMPT_DIRTRIM=1
 
 #if [ "$color_prompt" = yes ]; then

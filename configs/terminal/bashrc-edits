@@ -106,7 +106,18 @@ alias gc='git commit -m'
 alias gp='git push'
 alias gl='git log --oneline --graph --decorate'
 
+# Jump to dirs with partial matches using fzf (install it first):
+cdf() {
+    local dir
+    dir=$(find "${1:-.}" -type d 2>/dev/null | fzf +m) && cd "$dir"
+}
 
+# Add a quick system health check:
+syscheck() {
+    echo "CPU: $(top -bn1 | grep "Cpu(s)" | awk '{print $2}')% used"
+    echo "Mem: $(free -h | awk '/^Mem:/ {print $3 "/" $2}')"
+    echo "Disk: $(df -h / | awk 'NR==2 {print $5}')"
+}
 
 
 # Save current directory as a bookmark

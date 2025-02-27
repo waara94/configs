@@ -80,15 +80,74 @@ cfind() {
         ' \
         --preview-window=right:60%:wrap \
         --bind='ctrl-y:execute-silent(echo {} | xclip -selection clipboard)+abort' \
-        --bind='ctrl-p:toggle-preview')
-        # --header='Select files (Ctrl-Y: copy path, Ctrl-P: toggle preview, Tab: multi-select)')
+        --bind='ctrl-p:toggle-preview' \
+        --bind='ctrl-d:execute-silent(echo "cd \"$(dirname {})\"" > /tmp/cfind_cd_command)+abort')
+        
 
     if [ -n "$selected_files" ]; then
         echo "$selected_files" | tr '\n' ' ' | xargs -r "$editor"
     fi
+
+    if [ -f /tmp/cfind_cd_command ]; then
+        source /tmp/cfind_cd_command
+        rm /tmp/cfind_cd_command
+    fi
 }
 
 alias cf='cfind'
+
+
+# cfind() {
+#     local start_dir="${1:-.}"
+#     local file_pattern="${2:-*}"
+#     local editor="${CFIND_EDITOR:-code}"
+
+#     for cmd in find fzf batcat "$editor" git; do
+#         if ! command -v "$cmd" &>/dev/null; then
+#             echo "Error: $cmd is not installed" >&2
+#             return 1
+#         fi
+#     done
+
+#     if [ ! -d "$start_dir" ]; then
+#         echo "Error: '$start_dir' is not a directory" >&2
+#         return 1
+#     fi
+
+#     local selected_files
+#     selected_files=$(find "$start_dir" -type f -name "$file_pattern" 2>/dev/null | fzf -m \
+#         --preview='
+#             file={}
+#             if git -C "$(dirname "$file")" rev-parse 2>/dev/null; then
+#                 branch=$(git -C "$(dirname "$file")" rev-parse --abbrev-ref HEAD 2>/dev/null || echo "Detached HEAD")
+#                 status=$(git -C "$(dirname "$file")" status --porcelain "$file" 2>/dev/null | cut -c1-2)
+#                 [ -n "$status" ] && status=" ($status)" || status=""
+#             else
+#                 branch="Not in Git"
+#                 status=""
+#             fi
+#             last_edited=$(stat -c "%y" "$file" 2>/dev/null || stat -f "%Sm" "$file")
+#             file_size=$(ls -lh "$file" | awk "{print \$5}")
+#             permissions=$(ls -l "$file" | awk "{print \$1}")
+#             echo -e "\033[1;34mFile:\033[0m $(basename "$file")"
+#             echo -e "\033[1;32mGit Branch:\033[0m $branch$status"
+#             echo -e "\033[1;33mLast Edited:\033[0m $last_edited"
+#             echo -e "\033[1;36mSize:\033[0m $file_size"
+#             echo -e "\033[1;37mPermissions:\033[0m $permissions"
+#             echo -e "\033[1;35m--- Content Preview ---\033[0m"
+#             batcat --color=always --style=numbers --line-range=:500 "$file"
+#         ' \
+#         --preview-window=right:60%:wrap \
+#         --bind='ctrl-y:execute-silent(echo {} | xclip -selection clipboard)+abort' \
+#         --bind='ctrl-p:toggle-preview')
+#         # --header='Select files (Ctrl-Y: copy path, Ctrl-P: toggle preview, Tab: multi-select)')
+
+#     if [ -n "$selected_files" ]; then
+#         echo "$selected_files" | tr '\n' ' ' | xargs -r "$editor"
+#     fi
+# }
+
+# alias cf='cfind'
 
 
 

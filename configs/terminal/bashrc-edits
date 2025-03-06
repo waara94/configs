@@ -1,6 +1,6 @@
 ###################################################################
 # History settings (Also, see HISTSIZE and HISTFILESIZE)
-PROMPT_COMMAND="history -a; history -n; $PROMPT_COMMAND"
+PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
 HISTTIMEFORMAT="%F %T "  # Outputs: YYYY-MM-DD HH:MM:SS
 HISTIGNORE="&:ls:ll:la:history:exit:pwd:clear"
 

@@ -165,6 +165,9 @@ alias gc='git commit -m'
 alias gp='git push'
 alias gl='git log --oneline --graph --decorate'
 
+# Batcat
+alias cat='batcat'
+
 # Jump to dirs with partial matches using fzf (install it first):
 cdf() {
     local dir

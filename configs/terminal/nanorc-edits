@@ -6,3 +6,13 @@ include /usr/share/nano/html.nanorc
 
 set tabsize 4
 set tabstospaces
+set autoindent        # Auto-indent new lines
+set constantshow      # Show cursor position always
+set linenumbers       # Show line numbers
+set mouse             # Enable mouse support (click to move cursor)
+
+set titlecolor white,black
+set statuscolor white,black
+set keycolor blue
+set functioncolor white
+set numbercolor white

@@ -1,0 +1,8 @@
+include /usr/share/nano/sh.nanorc
+include /usr/share/nano/python.nanorc
+include /usr/share/nano/perl.nanorc
+include /usr/share/nano/php.nanorc
+include /usr/share/nano/html.nanorc
+
+set tabsize 4
+set tabstospaces

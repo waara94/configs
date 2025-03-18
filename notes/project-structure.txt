@@ -1,0 +1,51 @@
+waara@penguin:~/tmp/zorro$ tree
+.
+├── docs
+├── python
+│   ├── pyproject.toml
+│   ├── README.md
+│   ├── run
+│   │   └── run_format_check.py
+│   ├── uv.lock
+│   └── zorro
+│       ├── pyproject.toml
+│       ├── README.md
+│       └── src
+│           └── zorro
+│               ├── format
+│               │   ├── format.py
+│               │   ├── __init__.py
+│               │   └── __pycache__
+│               │       ├── format.cpython-312.pyc
+│               │       └── __init__.cpython-312.pyc
+│               ├── __init__.py
+│               ├── load_data
+│               │   └── load_data.py
+│               ├── __pycache__
+│               │   └── __init__.cpython-312.pyc
+│               └── py.typed
+└── README.md
+
+11 directories, 15 files
+waara@penguin:~/tmp/zorro$ ls
+docs  python  README.md
+waara@penguin:~/tmp/zorro$ cat python/pyproject.toml 
+[project]
+name = "python"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "grok-utils",
+    "zorro",
+]
+
+[tool.uv.workspace]
+members = ["zorro"]
+
+[tool.uv.sources]
+zorro = { workspace = true }
+grok-utils = { path = "../../../git-repos/uv-workspace-test/projects/grok/grok_utils", editable = true }
+
+waara@penguin:~/tmp/zorro$ 

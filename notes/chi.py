@@ -1,66 +1,68 @@
-import numpy as np
+from collections import Counter
+
 from scipy.stats import chisquare
 
 
-def chi2_randomness_test(sample, n_symbols: int, alpha=0.05):
+def chi_square_randomness_test(
+    sequence: str, alpha: float, alphabet_size: int
+) -> tuple[bool, float, float]:
     """
-    Performs a Chi-Square Goodness of Fit test to check if a sample appears randomly distributed
-    across its unique symbols.
+    Performs a chi-square goodness-of-fit test to determine if a sequence appears random.
 
-    Parameters:
-        sample (list): A list of categorical symbols (e.g., ['A', 'B', 'C', ...])
-        alpha (float): Significance level for the test (default: 0.05)
+    Args:
+        sequence (str): The input string sequence to test.
+        alpha (float): Significance level (typically 0.05 or 0.01).
+        alphabet_size (int): Number of possible symbols in the alphabet.
 
     Returns:
-        dict: A dictionary with chi-square statistic, p-value, and interpretation
+        tuple[bool, float, float]: (is_random, chi_square_stat, p_value) where:
+            - is_random: True if sequence appears random (fails to reject H0).
+            - chi_square_stat: The calculated chi-square statistic.
+            - p_value: The p-value from the test.
+
+    Raises:
+        ValueError: If inputs are invalid.
     """
-    if not sample:
-        raise ValueError("Empty sample")
 
-    symbols, counts = np.unique(
-        sample, return_counts=True
-    )  # Get unique symbols and their counts
-    print(symbols)
-    print(counts)
+    # Input validation
+    if not isinstance(sequence, str) or not sequence:
+        raise ValueError("Sequence must be a non-empty string")
+    if not isinstance(alpha, float) or not 0 < alpha < 1:
+        raise ValueError("Alpha must be a float between 0 and 1")
+    if not isinstance(alphabet_size, int) or alphabet_size <= 0:
+        raise ValueError("Alphabet size must be a positive integer")
 
-    expected_counts = np.full(
-        n_symbols, len(sample) / n_symbols
-    )  # Uniform expected distribution
+    # Compute observed frequencies
+    observed_counts = Counter(sequence)
+    observed_counts = [x for x in list(observed_counts.values())] + [0] * (
+        alphabet_size - len(set(sequence))
+    )
+    print(observed_counts)
 
-    chi2_stat, p_value = chisquare(counts, expected_counts)  # Chi-square test
+    # Expected frequencies assuming a uniform distribution
+    n = len(sequence)
+    expected_frequencies = [n / alphabet_size] * alphabet_size
+    print(expected_frequencies)
 
-    if p_value >= alpha:
-        hypothesis = "H0: not rejected (sample appears random)"
-    else:
-        hypothesis = "H0: rejected (sample does not appear random)"
+    chi_stat, p_value = chisquare(
+        f_obs=observed_counts,
+        f_exp=expected_frequencies,
+        ddof=0,
+    )
 
-    result = {"chi2_stat": chi2_stat, "p_value": p_value, "hypothesis": hypothesis}
+    # Decision: if p-value < alpha, reject H0 (sequence is not random)
+    is_random = p_value >= alpha
 
-    return result
+    return is_random, chi_stat, p_value
 
 
-# Example usage
-sample_data = [
-    "A",
-    "B",
-    "C",
-    "A",
-    "B",
-    "C",
-    "D",
-    "E",
-    "F",
-    "G",
-    "H",
-    "I",
-    "A",
-    "B",
-    "C",
-]
-alpha_value = 0.05  # Customizable p-value threshold
-result = chi2_randomness_test(sample_data, n_symbols=9, alpha=alpha_value)
+if __name__ == "__main__":
+    # Example matching your rat experiment (3 categories, 90 trials)
+    sequence = "101010101010"  # Simulated input
+    result, chi_stat, p = chi_square_randomness_test(
+        sequence, alpha=0.05, alphabet_size=2
+    )
 
-# Print results
-print(f"Chi-Square Statistic: {result['chi2_stat']}")
-print(f"P-value: {result['p_value']}")
-print(f"Interpretation: {result['hypothesis']}")
+    print(f"Chi-square statistic: {chi_stat:.2f}")
+    print(f"P-value: {p}")
+    print(f"Conclusion: {'Random' if result else 'Not random'}")

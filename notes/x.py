@@ -101,9 +101,21 @@ def transpose_strings(strings):
 
 
 p_values = np.array([0.01, 0.04, 0.02, 0.001, 0.05, 0.20, 0.15, 0.003])
-
 reject, pvals_corrected, _, _ = multipletests(p_values, alpha=0.05, method='fdr_bh')
-
 significant_pvals = p_values[reject]
-
 print("P-values that should be rejected:", significant_pvals)
+
+
+
+
+
+p_values = np.array([0.01, 0.04, 0.02, 0.001, 0.05, 0.20, 0.15, 0.003])
+methods = ['bonferroni', 'holm', 'fdr_bh', 'fdr_by']
+results = {}
+for method in methods:
+    reject, pvals_corrected, _, _ = multipletests(p_values, alpha=0.05, method=method)
+    results[method] = (reject, pvals_corrected)
+for method, (reject, pvals_corrected) in results.items():
+    print(f"\nMethod: {method}")
+    print("Adjusted p-values:", pvals_corrected)
+    print("Reject Null Hypothesis:", reject)

@@ -96,3 +96,14 @@ def transpose_strings(strings):
 def transpose_strings(strings):
     return [''.join(filter(None, chars)) for chars in zip_longest(*strings, fillvalue=None)]
 
+
+
+
+
+p_values = np.array([0.01, 0.04, 0.02, 0.001, 0.05, 0.20, 0.15, 0.003])
+
+reject, pvals_corrected, _, _ = multipletests(p_values, alpha=0.05, method='fdr_bh')
+
+significant_pvals = p_values[reject]
+
+print("P-values that should be rejected:", significant_pvals)

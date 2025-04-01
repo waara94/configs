@@ -1,5 +1,5 @@
 from collections import Counter, defaultdict
-
+from itertools import zip_longest
 import numpy as np
 from scipy.stats import entropy
 
@@ -86,27 +86,13 @@ def markov_transitions(ciphertext, alphabet_size=26):
 def transpose_strings(strings):
     if not strings:
         return []
-
     max_length = max(len(s) for s in strings)  # Find the longest string length
     transposed = []
-
     for i in range(max_length):
         transposed.append(''.join(s[i] for s in strings if i < len(s)))
-
     return transposed
 
-# Example usage
-strings = ["abc", "de", "fghi"]
-result = transpose_strings(strings)
-print(result)  # Output: ['adf', 'beg', 'ch', 'i']
-
-
-from itertools import zip_longest
 
 def transpose_strings(strings):
     return [''.join(filter(None, chars)) for chars in zip_longest(*strings, fillvalue=None)]
 
-# Example usage
-strings = ["abc", "de", "fghi"]
-result = transpose_strings(strings)
-print(result)  # Output: ['adf', 'beg', 'ch', 'i']

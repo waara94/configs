@@ -119,3 +119,35 @@ for method, (reject, pvals_corrected) in results.items():
     print(f"\nMethod: {method}")
     print("Adjusted p-values:", pvals_corrected)
     print("Reject Null Hypothesis:", reject)
+
+
+
+
+def longest_common_substrings(strings: list[str], n: int):
+    """
+    Finds the top n longest common substrings among all given strings.
+
+    :param strings: A list or set of strings.
+    :param n: Number of longest common substrings to return.
+    :return: A list of top n longest common substrings sorted by length.
+    """
+    if not strings or len(strings) < 2:
+        return []
+
+    shortest_str = min(strings, key=len)
+    substrings = set()
+
+    for i in range(len(shortest_str)):
+        for j in range(i + 1, len(shortest_str) + 1):
+            substr = shortest_str[i:j]
+            if all(substr in s for s in strings):
+                substrings.add(substr)
+
+    sorted_substrings = sorted(substrings, key=len, reverse=True)
+
+    return sorted_substrings[:n]
+
+
+strings = ["broadcaster", "broadcasting", "broadcast"]
+n = 3
+print(longest_common_substrings(strings, n))

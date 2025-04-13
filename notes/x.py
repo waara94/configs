@@ -151,3 +151,21 @@ def longest_common_substrings(strings: list[str], n: int):
 strings = ["broadcaster", "broadcasting", "broadcast"]
 n = 3
 print(longest_common_substrings(strings, n))
+
+
+from dataclasses import dataclass, field
+from typing import Callable, Optional
+from datetime import datetime
+
+ValidatorType = Optional[Callable[['DataPoint'], None]]
+
+@dataclass(frozen=True, order=True, slots=True)
+class DataPoint:
+    id: int
+    timestamp: datetime
+    data: float
+    _validator: ValidatorType = field(default=None, compare=False, repr=False)
+
+    def __post_init__(self):
+        if self._validator:
+            self._validator(self)

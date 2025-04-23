@@ -169,3 +169,13 @@ class DataPoint:
     def __post_init__(self):
         if self._validator:
             self._validator(self)
+
+
+
+
+def filter_unique(strings, comparison_func):
+    unique = []
+    for s in strings:
+        if not any(comparison_func(s, u) for u in unique):
+            unique.append(s)
+    return unique

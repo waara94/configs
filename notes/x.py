@@ -148,17 +148,8 @@ def longest_common_substrings(strings: list[str], n: int):
     return sorted_substrings[:n]
 
 
-strings = ["broadcaster", "broadcasting", "broadcast"]
-n = 3
-print(longest_common_substrings(strings, n))
-
-
-from dataclasses import dataclass, field
-from typing import Callable, Optional
-from datetime import datetime
 
 ValidatorType = Optional[Callable[['DataPoint'], None]]
-
 @dataclass(frozen=True, order=True, slots=True)
 class DataPoint:
     id: int
@@ -171,11 +162,11 @@ class DataPoint:
             self._validator(self)
 
 
-
-
 def filter_unique(strings, comparison_func):
     unique = []
     for s in strings:
         if not any(comparison_func(s, u) for u in unique):
             unique.append(s)
     return unique
+
+

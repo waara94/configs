@@ -179,14 +179,20 @@ def lagged_pair_chi2(data, alphabet=ALPHABET, lag=1):
 
 # Example usage:
 data = "abacbbcacbabcbcbacaaaabcccaabcd" * 10
-data = "".join("a" if (i + 1) % 3 == 0 else char for i, char in enumerate(data))
-chi2, pval, obs_table = lagged_pair_chi2(data, alphabet="abc", lag=3)
+data = "".join("a" if (i + 1) % 5 == 0 else char for i, char in enumerate(data))
+# chi2, pval, obs_table = lagged_pair_chi2(data, alphabet="abcd", lag=5)
 
-print(f"Lag-1 pair χ² = {chi2:.2f}, p = {pval}")
-print("Observed contingency table (rows=curr, cols=next):")
-for row in obs_table:
-    print("  ", row)
+# print(f"Lag-n pair χ² = {chi2:.2f}, p = {pval}")
+# print("Observed contingency table (rows=curr, cols=next):")
+# for row in obs_table:
+#     print("  ", row)
 
+
+pvals = []
+for i in range(1, 10):
+    _, pval, _ = lagged_pair_chi2(data, alphabet="abcd", lag=i)
+    pvals.append((i, pval))
+print(min(pvals, key=lambda x: x[1]))
 
 # # Example usage (uncomment to test):
 # data = "abacbbcacbabcbcbacaaaabcccaabcd" * 10

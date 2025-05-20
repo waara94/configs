@@ -27,5 +27,5 @@ class TR:
         return self._groups
 
     @property
-    def nerrors(self) -> bool:
+    def nerrors(self) -> int:
         return self._nerrors

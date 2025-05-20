@@ -1,4 +1,5 @@
 import itertools
+import random
 from collections import Counter
 
 import statsmodels.stats.diagnostic as smd
@@ -177,9 +178,16 @@ def lagged_pair_chi2(data, alphabet=ALPHABET, lag=1):
     return chi2, p, table
 
 
+def generate_random_string(length):
+    return "".join(random.choice("abcd") for _ in range(length))
+
+
 # Example usage:
-data = "abacbbcacbabcbcbacaaaabcccaabcd" * 10
-data = "".join("a" if (i + 1) % 5 == 0 else char for i, char in enumerate(data))
+# data = "abacbbcacbabcbcbacaaaabcccaabcd" * 10
+data = generate_random_string(100)
+data = "".join(
+    random.choice("ab") if (i + 1) % 5 == 0 else char for i, char in enumerate(data)
+)
 # chi2, pval, obs_table = lagged_pair_chi2(data, alphabet="abcd", lag=5)
 
 # print(f"Lag-n pair χ² = {chi2:.2f}, p = {pval}")
@@ -192,12 +200,16 @@ pvals = []
 for i in range(1, 10):
     _, pval, _ = lagged_pair_chi2(data, alphabet="abcd", lag=i)
     pvals.append((i, pval))
-print(min(pvals, key=lambda x: x[1]))
+# print(min(pvals, key=lambda x: x[1]))
+print(*sorted(pvals, key=lambda x: x[1]), sep="\n")
 
-# # Example usage (uncomment to test):
+# Example usage (uncomment to test):
 # data = "abacbbcacbabcbcbacaaaabcccaabcd" * 10
-# # print("Symbol Frequency:", symbol_frequency_test(data))
-# # print("Bigram Frequency:", bigram_frequency_test(data))
+print(
+    "Symbol Frequency:",
+    symbol_frequency_test([d for i, d in enumerate(data) if (i + 1) % 5 == 0]),
+)
+# print("Bigram Frequency:", bigram_frequency_test(data))
 # print("Markov Transitions:", markov_transition_test(data, print_matrix=True))
-# # print("Autocorrelation:\n", autocorrelation_test(data))
-# # print("Entropy:", entropy_test(data), "vs max", math.log2(len(ALPHABET)))
+# print("Autocorrelation:\n", autocorrelation_test(data))
+# print("Entropy:", entropy_test(data), "vs max", math.log2(len(ALPHABET)))

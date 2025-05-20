@@ -196,12 +196,12 @@ data = "".join(
 #     print("  ", row)
 
 
-pvals = []
+pvals = {}
 for i in range(1, 10):
     _, pval, _ = lagged_pair_chi2(data, alphabet="abcd", lag=i)
-    pvals.append((i, pval))
+    pvals[i] = pval
 # print(min(pvals, key=lambda x: x[1]))
-print(*sorted(pvals, key=lambda x: x[1]), sep="\n")
+print(*sorted(pvals.items(), key=lambda x: x[1]), sep="\n")
 
 # Example usage (uncomment to test):
 # data = "abacbbcacbabcbcbacaaaabcccaabcd" * 10
